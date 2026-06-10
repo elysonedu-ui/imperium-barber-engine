@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IMPERIUM BARBER // Painel Administrativo</title>
+    <title>IMPERIUM BARBER | Painel Administrativo</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Outfit:wght@200;400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/style.css">
     <style>
@@ -187,7 +187,7 @@
         <header class="admin-header">
             <div class="admin-title-group">
                 <h1>Painel Administrativo da Agenda</h1>
-                <p>> GERENCIADOR_DE_RESERVAS // BANCO_SQLITE_CONECTADO</p>
+                <p style="color: var(--gold); letter-spacing: 2px;">GESTÃO INTELIGENTE DE BARBEARIAS</p>
             </div>
         </header>
 
@@ -207,10 +207,12 @@
         </section>
 
         {% if is_master %}
-        <div class="admin-tabs" style="display: flex; gap: 15px; margin-bottom: 20px;">
+        <div class="admin-tabs" style="display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap;">
             <button class="btn-cancel" style="color: var(--gold); border-color: var(--gold); background: transparent;" onclick="showTab('agendamentos')">AGENDAMENTOS</button>
             <button class="btn-cancel" style="color: var(--gold); border-color: var(--gold); background: transparent;" onclick="showTab('equipe')">EQUIPE (BARBEIROS)</button>
             <button class="btn-cancel" style="color: var(--gold); border-color: var(--gold); background: transparent;" onclick="showTab('servicos')">SERVIÇOS & PREÇOS</button>
+            <button class="btn-cancel" style="color: var(--gold); border-color: var(--gold); background: transparent;" onclick="showTab('clientes')">CLIENTES (CRM)</button>
+            <button class="btn-cancel" style="color: var(--gold); border-color: var(--gold); background: transparent;" onclick="showTab('config')">CONFIGURAÇÕES</button>
         </div>
         {% endif %}
 
@@ -317,6 +319,62 @@
                 </tbody>
             </table>
         </div>
+        <!-- Tab Clientes (CRM) -->
+        <div id="tab-clientes" class="table-container tab-content" style="display: none;">
+            <h2 style="color: var(--gold); font-family: var(--font-heading); margin-bottom: 20px;">Meus Clientes (CRM)</h2>
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>WhatsApp</th>
+                        <th>Email</th>
+                        <th>Usuário</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in clientes_crm %}
+                    <tr>
+                        <td class="gold">{{ c.name }}</td>
+                        <td>{{ c.phone }}</td>
+                        <td>{{ c.email }}</td>
+                        <td>{{ c.username }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Tab Configurações -->
+        <div id="tab-config" class="table-container tab-content" style="display: none;">
+            <h2 style="color: var(--gold); font-family: var(--font-heading); margin-bottom: 20px;">Configurações da Loja (White-Label)</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div class="form-group">
+                    <label class="form-label" style="color: var(--gold);">Nome Primário (Ex: IMPERIUM)</label>
+                    <input type="text" id="config-nome-pri" value="{{ site_config.nome_primario }}" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" style="color: var(--gold);">Nome Secundário (Ex: BARBER)</label>
+                    <input type="text" id="config-nome-sec" value="{{ site_config.nome_secundario }}" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" style="color: var(--gold);">WhatsApp com DDD (Somente Números)</label>
+                    <input type="text" id="config-whatsapp" value="{{ site_config.whatsapp }}" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" style="color: var(--gold);">Intervalo de Agendamento (Minutos)</label>
+                    <input type="number" id="config-interval" value="{{ site_config.interval_minutes }}" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" style="color: var(--gold);">Horário de Abertura</label>
+                    <input type="time" id="config-start" value="{{ site_config.start_time }}" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" style="color: var(--gold);">Horário de Fechamento</label>
+                    <input type="time" id="config-end" value="{{ site_config.end_time }}" class="form-input">
+                </div>
+            </div>
+            <button class="form-btn" onclick="saveConfig()" style="margin-top: 20px;">SALVAR CONFIGURAÇÕES</button>
+        </div>
         {% endif %}
 
     </main>
@@ -329,6 +387,27 @@
         function showTab(tabName) {
             document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
             document.getElementById('tab-' + tabName).style.display = 'block';
+        }
+
+        async function saveConfig() {
+            const payload = {
+                nome_primario: document.getElementById('config-nome-pri').value,
+                nome_secundario: document.getElementById('config-nome-sec').value,
+                whatsapp: document.getElementById('config-whatsapp').value,
+                start_time: document.getElementById('config-start').value,
+                end_time: document.getElementById('config-end').value,
+                interval_minutes: document.getElementById('config-interval').value
+            };
+            const res = await fetch('/admin/update_config', {
+                method: 'POST', headers: {"Content-Type": "application/json"},
+                body: JSON.stringify(payload)
+            });
+            if(res.ok) {
+                alert("Configurações salvas com sucesso!");
+                window.location.reload();
+            } else {
+                alert("Erro ao salvar.");
+            }
         }
 
         async function addBarber() {

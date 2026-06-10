@@ -3,15 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IMPERIUM BARBER // Corte de Elite</title>
+    <title>{{ site_config.nome_primario }} {{ site_config.nome_secundario }} | Corte de Elite</title>
     
     <!-- Open Graph / WhatsApp Meta Tags -->
-    <meta property="og:title" content="IMPERIUM BARBER | Agendamento de Elite">
+    <meta property="og:title" content="{{ site_config.nome_primario }} {{ site_config.nome_secundario }} | Agendamento de Elite">
     <meta property="og:description" content="A experiência definitiva de barbearia. Agende seu horário online em segundos e viva a exclusividade.">
     <meta property="og:image" content="https://imperium-barber-engine.onrender.com/static/hero_bg.png">
     <meta property="og:url" content="https://imperium-barber-engine.onrender.com/">
     <meta property="og:type" content="website">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Outfit:wght@200;400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <script>
+        window.SITE_CONFIG = {
+            start_time: "{{ site_config.start_time }}",
+            end_time: "{{ site_config.end_time }}",
+            interval_minutes: {{ site_config.interval_minutes }}
+        };
+    </script>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
@@ -20,8 +27,8 @@
 
     <header class="header">
         <div class="logo">
-            <span class="logo-classic">IMPERIUM</span>
-            <span class="logo-gold">BARBER</span>
+            <span class="logo-classic">{{ site_config.nome_primario }}</span>
+            <span class="logo-gold">{{ site_config.nome_secundario }}</span>
         </div>
         <nav class="nav">
             <a href="#inicio" class="nav-link active">INÍCIO</a>
@@ -41,7 +48,7 @@
 
     <section id="inicio" class="hero">
         <div class="hero-content">
-            <div class="badge">ESTILO // TRADIÇÃO // EXCELÊNCIA</div>
+            <div class="badge">ESTILO • TRADIÇÃO • EXCELÊNCIA</div>
             <h1 class="hero-title">A Engenharia do <span class="gold-text">Corte Perfeito</span></h1>
             <p class="hero-subtitle">Software e Serviço de Elite. Agende sua experiência no mais alto padrão de Curitiba de forma 100% automatizada.</p>
             <div class="hero-actions">
@@ -55,7 +62,7 @@
                 <div class="card-inner">
                     <div class="barber-pole"></div>
                     <div class="visual-text">
-                        <span class="vt-title">IMPERIUM BARBER</span>
+                        <span class="vt-title">{{ site_config.nome_primario }} {{ site_config.nome_secundario }}</span>
                     </div>
                 </div>
             </div>
@@ -107,7 +114,7 @@
             <div class="galeria-card hidden-reveal">
                 <img src="/static/port_fade.png" alt="Corte Degradê Fade Premium">
                 <div class="galeria-overlay">
-                    <span class="galeria-tag">Degradê Fade // Marcus Blade</span>
+                    <span class="galeria-tag">Degradê Fade • Marcus Blade</span>
                     <h3 class="galeria-title">Textured Crop Fade</h3>
                 </div>
             </div>
@@ -115,7 +122,7 @@
             <div class="galeria-card hidden-reveal">
                 <img src="/static/port_classic.png" alt="Corte Clássico Gentleman">
                 <div class="galeria-overlay">
-                    <span class="galeria-tag">Clássico // John Razor</span>
+                    <span class="galeria-tag">Clássico • John Razor</span>
                     <h3 class="galeria-title">Executive Pompadour</h3>
                 </div>
             </div>
@@ -123,7 +130,7 @@
             <div class="galeria-card hidden-reveal">
                 <img src="/static/port_barba.png" alt="Alinhamento de Barba Premium">
                 <div class="galeria-overlay">
-                    <span class="galeria-tag">Barba e Navalha // Marcus Blade</span>
+                    <span class="galeria-tag">Barba e Navalha • Marcus Blade</span>
                     <h3 class="galeria-title">Beard Sculpt & Shave</h3>
                 </div>
             </div>
@@ -274,7 +281,7 @@
     <div id="receipt-modal" class="modal-overlay">
         <div class="receipt-card">
             <div class="receipt-header">
-                <span class="rh-logo">IMPERIUM BARBER</span>
+                <span class="rh-logo">{{ site_config.nome_primario }} {{ site_config.nome_secundario }}</span>
                 <span class="rh-title">COMPROVANTE DE AGENDAMENTO</span>
             </div>
             
@@ -319,18 +326,18 @@
                 <span class="barcode-text">SYS_IMPERIUM_ENGINE_ACTIVE</span>
             </div>
 
-            <button id="close-modal-btn" class="btn-close-receipt">CONCLUÍDO // IMPRIMIR</button>
+            <button id="close-modal-btn" class="btn-close-receipt">CONCLUÍDO</button>
         </div>
     </div>
 
     <footer class="footer">
-        <p>&copy; 2026 Imperium Barber. Desenvolvido por <a href="https://instagram.com/rbmediaofficial" target="_blank" style="color: var(--gold); letter-spacing: 1px; text-decoration: none; font-weight: bold;">RB MEDIA</a>.</p>
+        <p>&copy; 2026 {{ site_config.nome_primario }} {{ site_config.nome_secundario }}. Desenvolvido por <a href="https://instagram.com/rbmediaofficial" target="_blank" style="color: var(--gold); letter-spacing: 1px; text-decoration: none; font-weight: bold;">RB MEDIA</a>.</p>
     </footer>
 
     <script src="/static/app.js"></script>
 
     <!-- WhatsApp Floating Button -->
-    <a href="https://wa.me/5511999999999?text=Ol%C3%A1%2C%20gostaria%20de%20agendar%20um%20hor%C3%A1rio%20na%20Imperium%20Barber!" class="whatsapp-float" target="_blank">
+    <a href="https://wa.me/{{ site_config.whatsapp }}?text=Ol%C3%A1%2C%20gostaria%20de%20agendar%20um%20hor%C3%A1rio%20na%20barbearia!" class="whatsapp-float" target="_blank">
         <svg xmlns="http://www.w3.org/2000/svg" style="width: 20px; height: 20px; fill: currentColor;" viewBox="0 0 448 512">
             <path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7 .9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/>
         </svg>

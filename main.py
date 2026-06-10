@@ -10,6 +10,10 @@ app.secret_key = '420_barbershop_key_2026'
 
 database.init_db()
 
+@app.context_processor
+def inject_config():
+    return dict(site_config=database.get_all_configs())
+
 EMAIL_LOG_PATH = os.path.join(os.path.dirname(__file__), 'notificacoes_email.txt')
 
 def simulate_email_notification(to_email, subject, body_html):
@@ -185,9 +189,11 @@ def admin():
     # Novos dados para o Painel Dinâmico
     servicos_db = []
     barbeiros_db = []
+    clientes_crm = []
     if is_master:
         servicos_db = database.get_all_services()
         barbeiros_db = database.get_all_barbers()
+        clientes_crm = database.get_all_clients()
 
     return render_template(
         'admin.html',
@@ -197,7 +203,8 @@ def admin():
         top_barber=top_barber,
         is_master=is_master,
         servicos_db=servicos_db,
-        barbeiros_db=barbeiros_db
+        barbeiros_db=barbeiros_db,
+        clientes_crm=clientes_crm
     )
 
 @app.route('/api/busy-slots', methods=['GET'])
@@ -444,6 +451,15 @@ def admin_delete_barber():
         return jsonify({"status": "success"})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+@app.route('/admin/update_config', methods=['POST'])
+def update_config():
+    if 'user_id' not in session or session.get('username') != 'admin':
+        return jsonify({"error": "Acesso negado"}), 403
+    data = request.get_json()
+    for key, val in data.items():
+        database.update_config(key, val)
+    return jsonify({"status": "success"})
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

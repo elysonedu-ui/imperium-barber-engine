@@ -8,6 +8,33 @@ def get_db_connection():
     conn.row_factory = sqlite3.Row
     return conn
 
+def get_all_configs():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('SELECT key, value FROM configuracoes')
+    rows = cursor.fetchall()
+    conn.close()
+    return {row['key']: row['value'] for row in rows}
+
+def update_config(key, value):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('''
+        INSERT INTO configuracoes (key, value)
+        VALUES (?, ?)
+        ON CONFLICT(key) DO UPDATE SET value=excluded.value
+    ''', (key, value))
+    conn.commit()
+    conn.close()
+
+def get_all_clients():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('SELECT id, name, phone, email, username FROM clientes')
+    clients = [dict(row) for row in cursor.fetchall()]
+    conn.close()
+    return clients
+
 def init_db():
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -99,7 +126,9 @@ def init_db():
         configuracoes = [
             ("start_time", "09:00"),
             ("end_time", "19:00"),
-            ("interval_minutes", "30")
+            ("nome_primario", "IMPERIUM"),
+            ("nome_secundario", "BARBER"),
+            ("whatsapp", "5511999999999")
         ]
         cursor.executemany('INSERT INTO configuracoes (key, value) VALUES (?, ?)', configuracoes)
         conn.commit()

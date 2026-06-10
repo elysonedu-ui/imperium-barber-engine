@@ -114,7 +114,27 @@ document.addEventListener("DOMContentLoaded", async () => {
     generateCalendar();
 
     const timeSlotsGrid = document.getElementById("time-slots-grid");
-    const standardTimes = ["09:00", "10:00", "11:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"];
+    let standardTimes = [];
+    if (window.SITE_CONFIG) {
+        let currentH = parseInt(window.SITE_CONFIG.start_time.split(":")[0]);
+        let currentM = parseInt(window.SITE_CONFIG.start_time.split(":")[1]);
+        const endH = parseInt(window.SITE_CONFIG.end_time.split(":")[0]);
+        const interval = window.SITE_CONFIG.interval_minutes;
+        
+        while (currentH < endH || (currentH === endH && currentM === 0)) {
+            const hStr = currentH.toString().padStart(2, '0');
+            const mStr = currentM.toString().padStart(2, '0');
+            standardTimes.push(`${hStr}:${mStr}`);
+            
+            currentM += interval;
+            if (currentM >= 60) {
+                currentH += Math.floor(currentM / 60);
+                currentM = currentM % 60;
+            }
+        }
+    } else {
+        standardTimes = ["09:00", "10:00", "11:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"];
+    }
     let selectedTime = "";
 
     async function generateTimeSlots() {
