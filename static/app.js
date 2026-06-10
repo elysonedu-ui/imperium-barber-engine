@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
     const navLinks = document.querySelectorAll(".nav-link");
     const sections = document.querySelectorAll("section");
 
