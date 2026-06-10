@@ -904,11 +904,18 @@ section {
 
 @media (max-width: 900px) {
     .header {
-        padding: 20px 5%;
+        padding: 15px 5%;
+        flex-direction: column;
+        gap: 15px;
+    }
+    .nav {
+        gap: 15px;
+        flex-wrap: wrap;
+        justify-content: center;
     }
     .hero {
         flex-direction: column-reverse;
-        padding-top: 120px;
+        padding-top: 180px;
         text-align: center;
         gap: 30px;
     }
