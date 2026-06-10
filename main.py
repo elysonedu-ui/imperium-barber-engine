@@ -163,8 +163,9 @@ def admin():
         return redirect(url_for('login'))
         
     barber_display_name = session['display_name']
+    is_master = (session['username'] == 'admin')
     
-    if session['username'] == 'admin':
+    if is_master:
         bookings = database.get_all_bookings()
     else:
         bookings = database.get_bookings_by_barber(barber_display_name)
@@ -181,12 +182,22 @@ def admin():
         barber_counts[b['barber']] = barber_counts.get(b['barber'], 0) + 1
     top_barber = max(barber_counts, key=barber_counts.get) if barber_counts else None
 
+    # Novos dados para o Painel Dinâmico
+    servicos_db = []
+    barbeiros_db = []
+    if is_master:
+        servicos_db = database.get_all_services()
+        barbeiros_db = database.get_all_barbers()
+
     return render_template(
         'admin.html',
         bookings=bookings,
         total_bookings=total_bookings,
         total_revenue=total_revenue,
-        top_barber=top_barber
+        top_barber=top_barber,
+        is_master=is_master,
+        servicos_db=servicos_db,
+        barbeiros_db=barbeiros_db
     )
 
 @app.route('/api/busy-slots', methods=['GET'])
@@ -342,6 +353,95 @@ def api_cancel_booking():
     try:
         database.delete_booking_by_admin(int(booking_id))
         return jsonify({"status": "success", "message": "Cancelado com sucesso."})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# === Rotas da API de Configurações Dinâmicas (SaaS) ===
+
+@app.route('/api/servicos', methods=['GET'])
+def api_servicos():
+    servicos = database.get_all_services()
+    return jsonify(servicos)
+
+@app.route('/api/barbeiros', methods=['GET'])
+def api_barbeiros():
+    barbeiros = database.get_all_barbers()
+    return jsonify(barbeiros)
+
+@app.route('/api/configuracoes', methods=['GET'])
+def api_configuracoes():
+    settings = database.get_settings()
+    return jsonify(settings)
+
+# === Rotas do Painel de Administração Dinâmica ===
+
+@app.route('/admin/add_service', methods=['POST'])
+def admin_add_service():
+    if 'user_id' not in session or session.get('user_type') != 'barber' or session.get('username') != 'admin':
+        return jsonify({"error": "Apenas o Administrador Master pode adicionar serviços."}), 403
+    
+    data = request.get_json() or {}
+    nome = data.get('nome', '').strip()
+    preco = data.get('preco')
+    
+    if not nome or preco is None:
+        return jsonify({"error": "Dados inválidos."}), 400
+        
+    try:
+        database.add_service(nome, float(preco))
+        return jsonify({"status": "success"})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/admin/delete_service', methods=['POST'])
+def admin_delete_service():
+    if 'user_id' not in session or session.get('user_type') != 'barber' or session.get('username') != 'admin':
+        return jsonify({"error": "Acesso negado."}), 403
+        
+    data = request.get_json() or {}
+    service_id = data.get('id')
+    if not service_id:
+        return jsonify({"error": "ID inválido."}), 400
+        
+    try:
+        database.delete_service(int(service_id))
+        return jsonify({"status": "success"})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/admin/add_barber', methods=['POST'])
+def admin_add_barber():
+    if 'user_id' not in session or session.get('user_type') != 'barber' or session.get('username') != 'admin':
+        return jsonify({"error": "Acesso negado."}), 403
+        
+    data = request.get_json() or {}
+    username = data.get('username', '').strip()
+    password = data.get('password', '').strip()
+    display_name = data.get('display_name', '').strip()
+    email = data.get('email', '').strip()
+    
+    if not all([username, password, display_name, email]):
+        return jsonify({"error": "Dados incompletos."}), 400
+        
+    success = database.add_barber(username, password, display_name, email)
+    if success:
+        return jsonify({"status": "success"})
+    return jsonify({"error": "Usuário já existe."}), 409
+
+@app.route('/admin/delete_barber', methods=['POST'])
+def admin_delete_barber():
+    if 'user_id' not in session or session.get('user_type') != 'barber' or session.get('username') != 'admin':
+        return jsonify({"error": "Acesso negado."}), 403
+        
+    data = request.get_json() or {}
+    barber_id = data.get('id')
+    
+    if not barber_id:
+        return jsonify({"error": "ID inválido."}), 400
+        
+    try:
+        database.delete_barber(int(barber_id))
+        return jsonify({"status": "success"})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 

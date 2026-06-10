@@ -21,6 +21,54 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    // === Carregamento Dinâmico (SaaS) ===
+    const barberContainer = document.getElementById("barber-container");
+    const serviceSelect = document.getElementById("service-select");
+
+    async function loadDynamicConfig() {
+        try {
+            if (barberContainer) {
+                const res = await fetch("/api/barbeiros");
+                const barbers = await res.json();
+                barberContainer.innerHTML = "";
+                barbers.forEach((barber, index) => {
+                    const checked = index === 0 ? "checked" : "";
+                    const imgName = barber.username === "john" ? "barber_john.png" : "barber_marcus.png";
+                    barberContainer.innerHTML += `
+                        <label class="barber-option">
+                            <input type="radio" name="barber" value="${barber.display_name}" ${checked}>
+                            <div class="barber-option-content">
+                                <img src="/static/${imgName}" alt="${barber.display_name}" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1px solid var(--gold);">
+                                <span class="bo-name">${barber.display_name}</span>
+                            </div>
+                        </label>
+                    `;
+                });
+                
+                // Re-atachar os eventos nos radios
+                document.querySelectorAll('input[name="barber"]').forEach(radio => {
+                    radio.addEventListener('change', generateTimeSlots);
+                });
+            }
+
+            if (serviceSelect) {
+                const res = await fetch("/api/servicos");
+                const services = await res.json();
+                serviceSelect.innerHTML = "";
+                services.forEach(s => {
+                    serviceSelect.innerHTML += `
+                        <option value="${s.nome}" data-price="${s.preco.toFixed(2)}">${s.nome} — R$ ${s.preco.toFixed(2).replace('.', ',')}</option>
+                    `;
+                });
+            }
+        } catch (e) {
+            console.error("Erro ao carregar configurações dinâmicas.", e);
+        }
+    }
+    
+    await loadDynamicConfig();
+
+
     const datePickerGrid = document.getElementById("date-picker-grid");
     let selectedDate = "";
 

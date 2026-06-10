@@ -206,7 +206,15 @@
             </div>
         </section>
 
-        <div class="table-container">
+        {% if is_master %}
+        <div class="admin-tabs" style="display: flex; gap: 15px; margin-bottom: 20px;">
+            <button class="btn-cancel" style="color: var(--gold); border-color: var(--gold); background: transparent;" onclick="showTab('agendamentos')">AGENDAMENTOS</button>
+            <button class="btn-cancel" style="color: var(--gold); border-color: var(--gold); background: transparent;" onclick="showTab('equipe')">EQUIPE (BARBEIROS)</button>
+            <button class="btn-cancel" style="color: var(--gold); border-color: var(--gold); background: transparent;" onclick="showTab('servicos')">SERVIÇOS & PREÇOS</button>
+        </div>
+        {% endif %}
+
+        <div id="tab-agendamentos" class="table-container tab-content">
             <table class="admin-table">
                 <thead>
                     <tr>
@@ -248,6 +256,69 @@
                 </tbody>
             </table>
         </div>
+
+        {% if is_master %}
+        <!-- Tab Equipe -->
+        <div id="tab-equipe" class="table-container tab-content" style="display: none;">
+            <h2 style="color: var(--gold); font-family: var(--font-heading); margin-bottom: 20px;">Gerenciar Equipe</h2>
+            <div style="margin-bottom: 30px; display: flex; gap: 10px;">
+                <input type="text" id="new-b-user" placeholder="Usuário (login)" class="form-input" style="width: auto; height: 40px;">
+                <input type="password" id="new-b-pass" placeholder="Senha" class="form-input" style="width: auto; height: 40px;">
+                <input type="text" id="new-b-name" placeholder="Nome de Exibição" class="form-input" style="width: auto; height: 40px;">
+                <input type="email" id="new-b-email" placeholder="E-mail" class="form-input" style="width: auto; height: 40px;">
+                <button class="form-btn" style="width: auto; padding: 0 20px; height: 40px; margin-top: 0;" onclick="addBarber()">ADICIONAR</button>
+            </div>
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Nome de Exibição</th>
+                        <th>Usuário</th>
+                        <th>E-mail</th>
+                        <th>Ação</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for b in barbeiros_db %}
+                    <tr>
+                        <td class="gold">{{ b.display_name }}</td>
+                        <td>{{ b.username }}</td>
+                        <td>{{ b.email }}</td>
+                        <td><button class="btn-cancel" onclick="deleteBarber('{{ b.id }}')">EXCLUIR</button></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Tab Serviços -->
+        <div id="tab-servicos" class="table-container tab-content" style="display: none;">
+            <h2 style="color: var(--gold); font-family: var(--font-heading); margin-bottom: 20px;">Gerenciar Serviços</h2>
+            <div style="margin-bottom: 30px; display: flex; gap: 10px;">
+                <input type="text" id="new-s-name" placeholder="Nome do Serviço" class="form-input" style="width: auto; flex: 1; height: 40px;">
+                <input type="number" step="0.01" id="new-s-price" placeholder="Preço (ex: 50.00)" class="form-input" style="width: 150px; height: 40px;">
+                <button class="form-btn" style="width: auto; padding: 0 20px; height: 40px; margin-top: 0;" onclick="addService()">ADICIONAR</button>
+            </div>
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Serviço</th>
+                        <th>Preço</th>
+                        <th>Ação</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for s in servicos_db %}
+                    <tr>
+                        <td class="gold">{{ s.nome }}</td>
+                        <td class="td-price">R$ {{ "%.2f"|format(s.preco) }}</td>
+                        <td><button class="btn-cancel" onclick="deleteService('{{ s.id }}')">EXCLUIR</button></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+
     </main>
 
     <footer class="footer">
@@ -255,6 +326,58 @@
     </footer>
 
     <script>
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+            document.getElementById('tab-' + tabName).style.display = 'block';
+        }
+
+        async function addBarber() {
+            const username = document.getElementById('new-b-user').value;
+            const password = document.getElementById('new-b-pass').value;
+            const name = document.getElementById('new-b-name').value;
+            const email = document.getElementById('new-b-email').value;
+            
+            if(!username || !password || !name || !email) return alert("Preencha todos os campos.");
+            
+            const res = await fetch('/admin/add_barber', {
+                method: 'POST', headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({username, password, display_name: name, email})
+            });
+            if(res.ok) window.location.reload();
+            else alert(await res.text());
+        }
+
+        async function deleteBarber(id) {
+            if(!confirm("Excluir barbeiro? Isso não pode ser desfeito.")) return;
+            const res = await fetch('/admin/delete_barber', {
+                method: 'POST', headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({id})
+            });
+            if(res.ok) window.location.reload();
+        }
+
+        async function addService() {
+            const nome = document.getElementById('new-s-name').value;
+            const preco = document.getElementById('new-s-price').value;
+            if(!nome || !preco) return alert("Preencha os campos.");
+            
+            const res = await fetch('/admin/add_service', {
+                method: 'POST', headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({nome, preco})
+            });
+            if(res.ok) window.location.reload();
+            else alert(await res.text());
+        }
+
+        async function deleteService(id) {
+            if(!confirm("Excluir serviço? Isso não pode ser desfeito.")) return;
+            const res = await fetch('/admin/delete_service', {
+                method: 'POST', headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({id})
+            });
+            if(res.ok) window.location.reload();
+        }
+
         async function cancelBooking(id) {
             if (!confirm("Tem certeza que deseja cancelar e excluir esta reserva definitivamente?")) {
                 return;

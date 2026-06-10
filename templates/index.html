@@ -216,30 +216,15 @@
             <form id="booking-form" class="booking-form">
                 <div class="form-step">
                     <label class="step-label">1. Escolha o seu Barbeiro</label>
-                    <div class="barber-select-grid">
-                        <label class="barber-option">
-                            <input type="radio" name="barber" value="Marcus Blade" checked>
-                            <div class="barber-option-content">
-                                <img src="/static/barber_marcus.png" alt="Marcus Blade" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1px solid var(--gold);">
-                                <span class="bo-name">Marcus Blade</span>
-                            </div>
-                        </label>
-                        <label class="barber-option">
-                            <input type="radio" name="barber" value="John Razor">
-                            <div class="barber-option-content">
-                                <img src="/static/barber_john.png" alt="John Razor" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1px solid var(--gold);">
-                                <span class="bo-name">John Razor</span>
-                            </div>
-                        </label>
+                    <div class="barber-select-grid" id="barber-container">
+                        <!-- Barbeiros gerados dinamicamente via JS -->
                     </div>
                 </div>
 
                 <div class="form-step">
                     <label class="step-label">2. Selecione o Serviço</label>
                     <select id="service-select" class="form-select">
-                        <option value="Corte Vintage" data-price="55.00">Corte Vintage — R$ 55,00</option>
-                        <option value="Barba e Toalha Quente" data-price="45.00">Barba e Toalha Quente — R$ 45,00</option>
-                        <option value="Combo Imperial" data-price="90.00">Combo Imperial — R$ 90,00</option>
+                        <!-- Serviços gerados dinamicamente via JS -->
                     </select>
                 </div>
 

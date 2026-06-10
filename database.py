@@ -48,6 +48,23 @@ def init_db():
             FOREIGN KEY (cliente_id) REFERENCES clientes (id) ON DELETE CASCADE
         )
     ''')
+
+    # 4. Cria a tabela de servicos
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS servicos (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nome TEXT NOT NULL,
+            preco REAL NOT NULL
+        )
+    ''')
+
+    # 5. Cria a tabela de configuracoes
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS configuracoes (
+            key TEXT PRIMARY KEY,
+            value TEXT NOT NULL
+        )
+    ''')
     
     conn.commit()
     
@@ -65,9 +82,31 @@ def init_db():
         ''', barber_accounts)
         conn.commit()
         print("Contas administrativas de barbeiros pré-populadas!")
+
+    # Popula serviços padrão se a tabela estiver vazia
+    cursor.execute('SELECT COUNT(*) as count FROM servicos')
+    if cursor.fetchone()['count'] == 0:
+        servicos = [
+            ("Corte Vintage", 55.00),
+            ("Experiência Imperium", 90.00)
+        ]
+        cursor.executemany('INSERT INTO servicos (nome, preco) VALUES (?, ?)', servicos)
+        conn.commit()
+
+    # Popula configurações padrão se a tabela estiver vazia
+    cursor.execute('SELECT COUNT(*) as count FROM configuracoes')
+    if cursor.fetchone()['count'] == 0:
+        configuracoes = [
+            ("start_time", "09:00"),
+            ("end_time", "19:00"),
+            ("interval_minutes", "30")
+        ]
+        cursor.executemany('INSERT INTO configuracoes (key, value) VALUES (?, ?)', configuracoes)
+        conn.commit()
         
     conn.close()
     print("Banco de dados SQLite relacional inicializado com sucesso!")
+
 
 # === Funções de Autenticação & Cadastro ===
 
@@ -182,6 +221,79 @@ def delete_booking_by_admin(booking_id):
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute('DELETE FROM agendamentos WHERE id = ?', (booking_id,))
+    conn.commit()
+    conn.close()
+    return True
+
+# === Funções Dinâmicas (SaaS) ===
+
+def get_all_barbers():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('SELECT id, username, display_name, email FROM barbeiros WHERE username != "admin"')
+    rows = cursor.fetchall()
+    conn.close()
+    return [dict(row) for row in rows]
+
+def add_barber(username, password, display_name, email):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute('''
+            INSERT INTO barbeiros (username, password, display_name, email)
+            VALUES (?, ?, ?, ?)
+        ''', (username, password, display_name, email))
+        conn.commit()
+        return True
+    except sqlite3.IntegrityError:
+        return False
+    finally:
+        conn.close()
+
+def delete_barber(barber_id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('DELETE FROM barbeiros WHERE id = ? AND username != "admin"', (barber_id,))
+    conn.commit()
+    conn.close()
+    return True
+
+def get_all_services():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM servicos')
+    rows = cursor.fetchall()
+    conn.close()
+    return [dict(row) for row in rows]
+
+def add_service(nome, preco):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('INSERT INTO servicos (nome, preco) VALUES (?, ?)', (nome, preco))
+    conn.commit()
+    conn.close()
+    return True
+
+def delete_service(service_id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('DELETE FROM servicos WHERE id = ?', (service_id,))
+    conn.commit()
+    conn.close()
+    return True
+
+def get_settings():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM configuracoes')
+    rows = cursor.fetchall()
+    conn.close()
+    return {row['key']: row['value'] for row in rows}
+
+def update_setting(key, value):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('UPDATE configuracoes SET value = ? WHERE key = ?', (value, key))
     conn.commit()
     conn.close()
     return True
