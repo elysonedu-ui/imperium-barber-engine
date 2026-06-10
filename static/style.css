@@ -905,17 +905,73 @@ section {
 @media (max-width: 900px) {
     .header {
         padding: 15px 5%;
-        flex-direction: column;
-        gap: 15px;
+        flex-direction: row;
+        justify-content: space-between;
+        gap: 0;
+        backdrop-filter: blur(20px);
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
     }
+    .logo-classic, .logo-gold {
+        font-size: 1.1rem;
+    }
+    .nav-btn {
+        padding: 8px 12px;
+        font-size: 0.7rem;
+    }
+    
+    /* Bottom Navigation Bar Premium */
     .nav {
-        gap: 15px;
-        flex-wrap: wrap;
-        justify-content: center;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background: rgba(10, 11, 14, 0.85);
+        backdrop-filter: blur(15px);
+        padding: 15px 10px;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        border-top: 1px solid var(--glass-border);
+        z-index: 1000;
+        gap: 5px;
     }
+    .nav-link {
+        font-size: 0.7rem;
+        letter-spacing: 0;
+        text-align: center;
+    }
+    .nav-link::after { display: none; }
+    
+    /* Fix overlap from bottom bar */
+    body {
+        padding-bottom: 70px;
+    }
+    
+    /* WhatsApp floating fix */
+    .whatsapp-float {
+        bottom: 85px;
+        right: 15px;
+    }
+
+    /* Typografia Premium Mobile */
+    .hero-title {
+        font-size: 2.3rem;
+    }
+    .hero-subtitle {
+        font-size: 1rem;
+    }
+    .section-title {
+        font-size: 1.6rem;
+    }
+
+    /* Touch Targets grandes */
+    .form-input, .time-slot, .barber-option-content {
+        min-height: 50px;
+    }
+
     .hero {
         flex-direction: column-reverse;
-        padding-top: 180px;
+        padding-top: 100px;
         text-align: center;
         gap: 30px;
     }
