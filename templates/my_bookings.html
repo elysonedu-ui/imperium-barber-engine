@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IMPERIUM BARBER // Minhas Reservas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Outfit:wght@200;400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        .client-container {
+            padding: 120px 8% 60px 8%;
+            min-height: 100vh;
+        }
+
+        .client-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            border-bottom: 1px dashed rgba(197, 160, 89, 0.2);
+            padding-bottom: 20px;
+        }
+
+        .client-title-group h1 {
+            font-family: var(--font-heading);
+            font-size: 2rem;
+            color: var(--text-light);
+        }
+
+        .client-title-group p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+            letter-spacing: 1px;
+            margin-top: 5px;
+        }
+
+        .bookings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .booking-item-card {
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 30px;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .booking-item-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--gold);
+            box-shadow: 0 0 8px var(--gold);
+        }
+
+        .booking-item-card:hover {
+            border-color: rgba(197, 160, 89, 0.3);
+            transform: translateY(-4px);
+        }
+
+        .bi-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+        }
+
+        .bi-label {
+            color: var(--text-muted);
+            font-weight: 300;
+        }
+
+        .bi-val {
+            color: var(--text-light);
+            font-weight: 700;
+        }
+
+        .bi-val.gold {
+            color: var(--gold);
+            text-shadow: 0 0 5px var(--gold-glow);
+        }
+
+        .bi-val.mono {
+            font-family: var(--font-mono);
+        }
+
+        .btn-client-cancel {
+            width: 100%;
+            background: rgba(255, 51, 51, 0.08);
+            border: 1px solid rgba(255, 51, 51, 0.3);
+            color: #ff4d4d;
+            padding: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: var(--font-body);
+            font-weight: bold;
+            font-size: 0.8rem;
+            letter-spacing: 1.5px;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .btn-client-cancel:hover {
+            background: #ff3333;
+            color: #ffffff;
+            box-shadow: 0 0 15px rgba(255, 51, 51, 0.4);
+            border-color: #ff3333;
+        }
+
+        .no-data-card {
+            grid-column: 1 / -1;
+            background: var(--bg-card);
+            border: 1px dashed var(--glass-border);
+            border-radius: 16px;
+            padding: 50px;
+            text-align: center;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+            font-size: 0.95rem;
+        }
+
+        .booking-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 255, 102, 0.08);
+            border: 1px solid rgba(0, 255, 102, 0.25);
+            color: #00ff66;
+            font-size: 0.65rem;
+            font-family: var(--font-mono);
+            padding: 4px 10px;
+            border-radius: 12px;
+            text-transform: uppercase;
+        }
+
+        .booking-badge.expired {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-gradient"></div>
+    <div class="bg-grid"></div>
+
+    <header class="header">
+        <div class="logo">
+            <span class="logo-classic">IMPERIUM</span>
+            <span class="logo-gold">BARBER</span>
+        </div>
+        <nav class="nav">
+            <a href="/" class="nav-link">PÁGINA INICIAL</a>
+            <a href="/logout" class="nav-btn" style="border-color: #ff3333; color: #ff3333;">SAIR DA CONTA</a>
+        </nav>
+    </header>
+
+    <main class="client-container">
+        <header class="client-header">
+            <div class="client-title-group">
+                <h1>Olá, {{ client_name }}!</h1>
+                <p>> SEUS_AGENDAMENTOS_E_HISTÓRICO // PORTAL_DO_CLIENTE</p>
+            </div>
+        </header>
+
+        <section class="bookings-grid">
+            {% if bookings %}
+                {% for b in bookings %}
+                    <div class="booking-item-card" id="card-{{ b.id }}" {% if b.is_past %}style="opacity: 0.7;"{% endif %}>
+                        {% if b.is_past %}
+                            <span class="booking-badge expired">> finalizado</span>
+                        {% else %}
+                            <span class="booking-badge">> confirmado</span>
+                        {% endif %}
+                        
+                        <div class="bi-row" style="margin-top: 15px;">
+                            <span class="bi-label">BARBEIRO:</span>
+                            <span class="bi-val gold">{{ b.barber }}</span>
+                        </div>
+                        
+                        <div class="bi-row">
+                            <span class="bi-label">SERVIÇO:</span>
+                            <span class="bi-val">{{ b.service }}</span>
+                        </div>
+
+                        <div class="bi-row">
+                            <span class="bi-label">DATA:</span>
+                            <span class="bi-val">{{ b.date }}</span>
+                        </div>
+
+                        <div class="bi-row">
+                            <span class="bi-label">HORÁRIO:</span>
+                            <span class="bi-val mono gold" style="font-size: 1.05rem;">{{ b.time }}</span>
+                        </div>
+
+                        <div class="bi-row" style="border-top: 1px dashed rgba(255,255,255,0.05); padding-top: 12px;">
+                            <span class="bi-label">VALOR DO CORTE:</span>
+                            <span class="bi-val mono" style="font-size: 1rem;">R$ {{ "%.2f"|format(b.price) }}</span>
+                        </div>
+
+                        {% if not b.is_past %}
+                            <button class="btn-client-cancel" onclick="cancelClientBooking('{{ b.id }}')">CANCELAR ESTE AGENDAMENTO</button>
+                        {% else %}
+                            <button class="btn-client-cancel" disabled style="opacity: 0.5; cursor: not-allowed; border-color: rgba(255,255,255,0.1); color: var(--text-muted); background: transparent;">AGENDAMENTO CONCLUÍDO</button>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="no-data-card">
+                    > VOCÊ NÃO POSSUI NENHUM AGENDAMENTO ATIVO. QUE TAL MARCAR UM CORTE HOJE, SENHOR?
+                </div>
+            {% endif %}
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2026 Imperium Barber. Tecnologia de Alta Performance para Barbearias.</p>
+    </footer>
+
+    <script>
+        async function cancelClientBooking(id) {
+            if (!confirm("Tem certeza que deseja cancelar o seu agendamento? O horário será liberado na mesma hora.")) {
+                return;
+            }
+
+            try {
+                const response = await fetch("/api/client-cancel", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ id: id })
+                });
+
+                if (!response.ok) {
+                    const data = await response.json();
+                    throw new Error(data.error || "Erro ao efetuar cancelamento.");
+                }
+
+                const card = document.getElementById(`card-${id}`);
+                if (card) {
+                    card.style.transition = "all 0.5s ease";
+                    card.style.opacity = "0";
+                    card.style.transform = "translateY(20px) scale(0.9)";
+                    setTimeout(() => {
+                        card.remove();
+                        window.location.reload();
+                    }, 500);
+                }
+            } catch (error) {
+                alert("Erro: " + error.message);
+            }
+        }
+    </script>
+</body>
+</html>

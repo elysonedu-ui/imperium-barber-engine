@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IMPERIUM BARBER // Corte de Elite</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Outfit:wght@200;400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="bg-gradient"></div>
+    <div class="bg-grid"></div>
+
+    <header class="header">
+        <div class="logo">
+            <span class="logo-classic">IMPERIUM</span>
+            <span class="logo-gold">BARBER</span>
+        </div>
+        <nav class="nav">
+            <a href="#inicio" class="nav-link active">INÍCIO</a>
+            <a href="#servicos" class="nav-link">SERVIÇOS</a>
+            <a href="#barbeiros" class="nav-link">BARBEIROS</a>
+            
+            {% if session.get('user_id') and session.get('user_type') == 'client' %}
+                <a href="/my-bookings" class="nav-link" style="color: var(--cyan); text-shadow: 0 0 5px var(--cyan-glow);">MINHAS RESERVAS</a>
+                <span class="nav-link" style="color: var(--gold); font-weight: bold; cursor: default;">OLÁ, {{ session.get('name').split()[0].upper() }}</span>
+            {% else %}
+                <a href="/login" class="nav-link" style="color: var(--gold); font-weight: 700;">ENTRAR / CADASTRO</a>
+            {% endif %}
+            
+            <a href="#agendamento" class="nav-btn">AGENDAR HORÁRIO</a>
+        </nav>
+    </header>
+
+    <section id="inicio" class="hero">
+        <div class="hero-content">
+            <div class="badge">ESTILO // TRADIÇÃO // EXCELÊNCIA</div>
+            <h1 class="hero-title">A Engenharia do <span class="gold-text">Corte Perfeito</span></h1>
+            <p class="hero-subtitle">Software e Serviço de Elite. Agende sua experiência no mais alto padrão de Curitiba de forma 100% automatizada.</p>
+            <div class="hero-actions">
+                <a href="#agendamento" class="btn-primary">AGENDAR EXPERIÊNCIA</a>
+                <a href="#servicos" class="btn-secondary">VER SERVIÇOS</a>
+            </div>
+        </div>
+        
+        <div class="hero-visual">
+            <div class="visual-card">
+                <div class="card-inner">
+                    <div class="barber-pole"></div>
+                    <div class="visual-text">
+                        <span class="vt-title">IMPERIUM BARBER</span>
+                        <span class="vt-status">> STATUS: DISPONÍVEL</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="servicos" class="servicos">
+        <div class="section-header hidden-reveal">
+            <h2 class="section-title">SERVIÇOS DE ELITE</h2>
+            <div class="section-divider"></div>
+        </div>
+
+        <div class="servicos-grid">
+            <div class="servico-card hidden-reveal">
+                <div class="card-glow"></div>
+                <div class="servico-icon">💈</div>
+                <h3 class="servico-name">Corte Vintage</h3>
+                <p class="servico-desc">Corte clássico ou moderno, degradê de alta precisão, finalização com pomada premium e massagem capilar.</p>
+                <div class="servico-price">R$ 55,00</div>
+            </div>
+
+            <div class="servico-card premium">
+                <div class="card-glow"></div>
+                <div class="servico-icon">⚔️</div>
+                <h3 class="servico-name">Barba e Toalha Quente</h3>
+                <p class="servico-desc">Barba desenhada com navalha, toalha aquecida com óleo de eucalipto, massagem facial e pós-barba hidratante.</p>
+                <div class="servico-price">R$ 45,00</div>
+            </div>
+
+            <div class="servico-card hidden-reveal">
+                <div class="card-glow"></div>
+                <div class="servico-icon">👑</div>
+                <h3 class="servico-name">Combo Imperial</h3>
+                <p class="servico-desc">A experiência definitiva. Corte de cabelo completo + barba com toalha quente + lavagem e hidratação capilar.</p>
+                <div class="servico-price">R$ 90,00</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Galeria de Portfólio Premium -->
+    <section id="galeria" class="galeria" style="background: rgba(0, 0, 0, 0.2); border-top: 1px solid var(--glass-border); border-bottom: 1px solid var(--glass-border);">
+        <div class="section-header hidden-reveal">
+            <h2 class="section-title">NOSSA ASSINATURA</h2>
+            <div class="section-divider"></div>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 10px;">Cortes reais feitos por nossos especialistas de elite.</p>
+        </div>
+
+        <div class="galeria-grid">
+            <div class="galeria-card hidden-reveal">
+                <img src="/static/port_fade.png" alt="Corte Degradê Fade Premium">
+                <div class="galeria-overlay">
+                    <span class="galeria-tag">Degradê Fade // Marcus Blade</span>
+                    <h3 class="galeria-title">Textured Crop Fade</h3>
+                </div>
+            </div>
+
+            <div class="galeria-card hidden-reveal">
+                <img src="/static/port_classic.png" alt="Corte Clássico Gentleman">
+                <div class="galeria-overlay">
+                    <span class="galeria-tag">Clássico // John Razor</span>
+                    <h3 class="galeria-title">Executive Pompadour</h3>
+                </div>
+            </div>
+
+            <div class="galeria-card hidden-reveal">
+                <img src="/static/port_barba.png" alt="Alinhamento de Barba Premium">
+                <div class="galeria-overlay">
+                    <span class="galeria-tag">Barba e Navalha // Marcus Blade</span>
+                    <h3 class="galeria-title">Beard Sculpt & Shave</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="barbeiros" class="barbeiros">
+        <div class="section-header hidden-reveal">
+            <h2 class="section-title">MESTRES DA LÂMINA</h2>
+            <div class="section-divider"></div>
+        </div>
+
+        <div class="barbeiros-grid">
+            <div class="barbeiro-card hidden-reveal">
+                <div class="barbeiro-avatar" style="overflow: hidden; border-radius: 50%; border: 2px solid var(--gold); box-shadow: 0 0 15px var(--gold-glow); width: 100px; height: 100px; margin: 0 auto 15px auto;">
+                    <img src="/static/barber_marcus.png" alt="Marcus Blade" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                <h3 class="barbeiro-name">Marcus Blade</h3>
+                <span class="barbeiro-specialty">Especialista em Degradê e Freestyle</span>
+            </div>
+
+            <div class="barbeiro-card hidden-reveal">
+                <div class="barbeiro-avatar" style="overflow: hidden; border-radius: 50%; border: 2px solid var(--gold); box-shadow: 0 0 15px var(--gold-glow); width: 100px; height: 100px; margin: 0 auto 15px auto;">
+                    <img src="/static/barber_john.png" alt="John Razor" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                <h3 class="barbeiro-name">John Razor</h3>
+                <span class="barbeiro-specialty">Especialista em Cortes Clássicos e Navalha</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Depoimentos e Prova Social -->
+    <section id="depoimentos" class="depoimentos" style="background: rgba(0, 0, 0, 0.15); border-top: 1px solid var(--glass-border); border-bottom: 1px solid var(--glass-border);">
+        <div class="section-header hidden-reveal">
+            <h2 class="section-title">AVALIAÇÕES DE ELITE</h2>
+            <div class="section-divider"></div>
+            <div class="rating-summary" style="display: flex; align-items: center; gap: 8px; margin-top: 10px;">
+                <span style="font-size: 1.5rem; font-weight: bold; color: var(--gold);">4.9/5</span>
+                <span style="color: #ffb700; font-size: 1.2rem;">★★★★★</span>
+                <span style="color: var(--text-muted); font-size: 0.8rem; font-family: var(--font-mono);">> 1.250+ CLIENTES SATISFEITOS NO GOOGLE</span>
+            </div>
+        </div>
+
+        <div class="reviews-grid">
+            <div class="review-card hidden-reveal">
+                <div class="review-stars">★★★★★</div>
+                <p class="review-text">"O melhor corte degradê que já fiz na vida. O Marcus é um artista. A atmosfera da barbearia é incrível, muito premium. Sem contar a praticidade de agendar direto pelo site sem complicação."</p>
+                <div class="review-author">
+                    <div class="author-initial">TA</div>
+                    <div class="author-info">
+                        <span class="author-name">Thiago Alencar</span>
+                        <span class="author-verify">✓ CLIENTE VERIFICADO</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="review-card hidden-reveal">
+                <div class="review-stars">★★★★★</div>
+                <p class="review-text">"Fiz barba com toalha quente com o John. Atendimento sensacional. Um verdadeiro ritual de cavalheiros. A recepção com café de alta qualidade e o ambiente escuro/dourado te fazem sentir em um clube de luxo."</p>
+                <div class="review-author">
+                    <div class="author-initial">RM</div>
+                    <div class="author-info">
+                        <span class="author-name">Rodrigo Mello</span>
+                        <span class="author-verify">✓ CLIENTE VERIFICADO</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="review-card hidden-reveal">
+                <div class="review-stars">★★★★★</div>
+                <p class="review-text">"Atendimento impecável! O agendamento é extremamente rápido e o fato de não precisar criar login logo de cara ajuda muito na correria do dia a dia. Recomendo de olhos fechados o Combo Imperial!"</p>
+                <div class="review-author">
+                    <div class="author-initial">FC</div>
+                    <div class="author-info">
+                        <span class="author-name">Felipe Costa</span>
+                        <span class="author-verify">✓ CLIENTE VERIFICADO</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="agendamento" class="agendamento">
+        <div class="section-header hidden-reveal">
+            <h2 class="section-title">AGENDAMENTO ONLINE</h2>
+            <div class="section-divider"></div>
+        </div>
+
+        <div class="booking-container hidden-reveal">
+            <!-- Gatilho de urgência premium -->
+            <div class="urgency-counter-banner" style="background: rgba(197, 160, 89, 0.04); border: 1px dashed var(--gold); border-radius: 12px; padding: 14px; margin-bottom: 30px; display: flex; align-items: center; justify-content: center; gap: 10px; text-align: center;">
+                <span class="pulse-icon" style="color: #ff3333; animation: pulse 1.5s infinite; font-size: 1.2rem;">🔥</span>
+                <span style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--gold); letter-spacing: 0.5px;">
+                    AGENDAS MUITO CONCORRIDAS: <strong style="color: #ffffff; text-shadow: 0 0 8px rgba(255, 51, 51, 0.5);">APENAS 3 VAGAS RESTANTES</strong> PARA HOJE!
+                </span>
+            </div>
+
+            <form id="booking-form" class="booking-form">
+                <div class="form-step">
+                    <label class="step-label">1. Escolha o seu Barbeiro</label>
+                    <div class="barber-select-grid">
+                        <label class="barber-option">
+                            <input type="radio" name="barber" value="Marcus Blade" checked>
+                            <div class="barber-option-content">
+                                <img src="/static/barber_marcus.png" alt="Marcus Blade" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1px solid var(--gold);">
+                                <span class="bo-name">Marcus Blade</span>
+                            </div>
+                        </label>
+                        <label class="barber-option">
+                            <input type="radio" name="barber" value="John Razor">
+                            <div class="barber-option-content">
+                                <img src="/static/barber_john.png" alt="John Razor" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1px solid var(--gold);">
+                                <span class="bo-name">John Razor</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-step">
+                    <label class="step-label">2. Selecione o Serviço</label>
+                    <select id="service-select" class="form-select">
+                        <option value="Corte Vintage" data-price="55.00">Corte Vintage — R$ 55,00</option>
+                        <option value="Barba e Toalha Quente" data-price="45.00">Barba e Toalha Quente — R$ 45,00</option>
+                        <option value="Combo Imperial" data-price="90.00">Combo Imperial — R$ 90,00</option>
+                    </select>
+                </div>
+
+                <div class="form-step">
+                    <label class="step-label">3. Selecione a Data</label>
+                    <div id="date-picker-grid" class="date-picker-grid">
+                        <!-- Datas geradas dinamicamente via JS -->
+                    </div>
+                </div>
+
+                <div class="form-step">
+                    <label class="step-label">4. Escolha o Horário</label>
+                    <div id="time-slots-grid" class="time-slots-grid">
+                        <!-- Slots gerados dinamicamente via JS -->
+                    </div>
+                </div>
+
+                <div class="form-step">
+                    <label class="step-label">5. Seus Dados de Agendamento</label>
+                    {% if session.get('user_id') and session.get('user_type') == 'client' %}
+                        <div class="input-group">
+                            <input type="text" id="client-name" value="{{ session.get('name') }}" readonly class="form-input" style="opacity: 0.7; cursor: not-allowed;" title="Nome da conta ativa">
+                            <input type="tel" id="client-phone" value="{{ session.get('phone') }}" readonly class="form-input" style="opacity: 0.7; cursor: not-allowed;" title="Telefone da conta ativa">
+                            <input type="email" id="client-email" value="{{ session.get('email') }}" readonly class="form-input" style="opacity: 0.7; cursor: not-allowed; display: none;">
+                        </div>
+                        <p style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--cyan); margin-top: 5px;">> VOCÊ ESTÁ LOGADO COMO CLIENTE DE ELITE.</p>
+                    {% else %}
+                        <div class="input-group" style="display: flex; flex-direction: column; gap: 12px;">
+                            <input type="text" id="client-name" placeholder="Seu Nome Completo" required class="form-input" style="background: rgba(0,0,0,0.4); border: 1px solid var(--glass-border);">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                                <input type="tel" id="client-phone" placeholder="WhatsApp (com DDD)" required class="form-input" style="background: rgba(0,0,0,0.4); border: 1px solid var(--glass-border);">
+                                <input type="email" id="client-email" placeholder="Seu Melhor E-mail" required class="form-input" style="background: rgba(0,0,0,0.4); border: 1px solid var(--glass-border);">
+                            </div>
+                        </div>
+                        <p style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-muted); margin-top: 5px;">> NÃO EXIGIMOS CADASTRO. SEUS DADOS SERÃO USADOS APENAS PARA A CONFIRMAÇÃO.</p>
+                    {% endif %}
+                </div>
+
+                <button type="submit" class="btn-submit">
+                    CONFIRMAR AGENDAMENTO EM TEMPO REAL
+                    <span class="btn-glow"></span>
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <div id="receipt-modal" class="modal-overlay">
+        <div class="receipt-card">
+            <div class="receipt-header">
+                <span class="rh-logo">IMPERIUM BARBER</span>
+                <span class="rh-title">COMPROVANTE DE AGENDAMENTO</span>
+            </div>
+            
+            <div class="receipt-divider"></div>
+            
+            <div class="receipt-body">
+                <div class="receipt-row">
+                    <span class="rr-label">CLIENTE:</span>
+                    <span class="rr-val" id="r-client-name">-</span>
+                </div>
+                <div class="receipt-row">
+                    <span class="rr-label">CONTATO:</span>
+                    <span class="rr-val" id="r-client-phone">-</span>
+                </div>
+                <div class="receipt-row">
+                    <span class="rr-label">BARBEIRO:</span>
+                    <span class="rr-val gold" id="r-barber">-</span>
+                </div>
+                <div class="receipt-row">
+                    <span class="rr-label">SERVIÇO:</span>
+                    <span class="rr-val" id="r-service">-</span>
+                </div>
+                <div class="receipt-row">
+                    <span class="rr-label">DATA:</span>
+                    <span class="rr-val" id="r-date">-</span>
+                </div>
+                <div class="receipt-row">
+                    <span class="rr-label">HORÁRIO:</span>
+                    <span class="rr-val" id="r-time">-</span>
+                </div>
+                
+                <div class="receipt-divider"></div>
+                
+                <div class="receipt-total">
+                    <span>TOTAL A PAGAR:</span>
+                    <span id="r-price" class="gold">R$ 0,00</span>
+                </div>
+            </div>
+
+            <div class="receipt-barcode">
+                <div class="barcode-lines"></div>
+                <span class="barcode-text">SYS_IMPERIUM_ENGINE_ACTIVE</span>
+            </div>
+
+            <button id="close-modal-btn" class="btn-close-receipt">CONCLUÍDO // IMPRIMIR</button>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2026 Imperium Barber. Tecnologia de Alta Performance para Barbearias.</p>
+    </footer>
+
+    <script src="/static/app.js"></script>
+
+    <!-- WhatsApp Floating Button -->
+    <a href="https://wa.me/5511999999999?text=Ol%C3%A1%2C%20gostaria%20de%20agendar%20um%20hor%C3%A1rio%20na%20Imperium%20Barber!" class="whatsapp-float" target="_blank">
+        <svg style="width: 20px; height: 20px; fill: currentColor;" viewBox="0 0 24 24">
+            <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.513 2.262 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.455L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.625 1.451 5.437.002 9.861-4.416 9.864-9.852.002-2.63-1.023-5.101-2.885-6.965C16.388 1.936 13.923.916 12.007.916c-5.441 0-9.866 4.418-9.87 9.854-.002 1.718.43 3.39 1.252 4.887L2.348 21l5.303-1.391zM18.8 15.085c-.37-.185-2.185-1.077-2.52-1.2-.333-.123-.577-.185-.82.185-.243.37-.942 1.185-1.155 1.43-.213.244-.426.273-.796.088-3.7-.185-5.89-1.677-7.14-3.847-.37-.63-.037-.97.27-1.28.277-.28.615-.71.922-1.066.307-.356.41-.608.614-1.015.204-.406.102-.76-.05-1.066-.154-.307-1.378-3.32-1.89-4.55-.5-.1.213-1.22.616-1.4.356-.16.82-.16 1.015-.16.195 0 .508.074.774.37.266.296.88 2.146.954 2.294.074.15.123.32.022.52-.1.2-.15.346-.3.52-.15.17-.315.38-.45.508-.15.15-.3.315-.12.62.77 1.33 1.72 2.45 2.87 3.49 1.48 1.34 2.73 1.79 3.12 1.98.39.19.62.16.85-.1.23-.266.98-1.14 1.24-1.53.26-.39.525-.32.895-.13.37.19 2.34 1.1 2.746 1.3.407.2.678.3.778.47.1.17.1.98-.27 1.36z"/>
+        </svg>
+        WhatsApp
+    </a>
+</body>
+</html>

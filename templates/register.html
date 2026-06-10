@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IMPERIUM BARBER // Cadastro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Outfit:wght@200;400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        .auth-container {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 120px 20px 60px 20px;
+        }
+
+        .auth-card {
+            width: 100%;
+            max-width: 460px;
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 40px;
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            box-shadow: 
+                0 25px 60px rgba(0,0,0,0.6),
+                0 0 40px rgba(197, 160, 89, 0.05);
+            position: relative;
+        }
+
+        .auth-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--gold), #ffffff, var(--gold));
+            border-radius: 20px 20px 0 0;
+            box-shadow: 0 3px 15px var(--gold-glow);
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .auth-logo {
+            font-family: var(--font-heading);
+            font-size: 1.4rem;
+            color: var(--text-light);
+            letter-spacing: 2px;
+        }
+
+        .auth-logo .gold {
+            color: var(--gold);
+            font-weight: bold;
+        }
+
+        .auth-subtitle {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+            letter-spacing: 1px;
+            margin-top: 5px;
+        }
+
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-label {
+            font-family: var(--font-body);
+            font-size: 0.82rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .auth-btn {
+            background: var(--gold);
+            border: 1px solid var(--gold);
+            color: var(--bg-dark);
+            padding: 14px 20px;
+            font-family: var(--font-body);
+            font-weight: bold;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            margin-top: 15px;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .auth-btn:hover {
+            transform: translateY(-2px);
+            background: #ffffff;
+            border-color: #ffffff;
+            box-shadow: 0 8px 20px rgba(255, 255, 255, 0.2);
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 0.82rem;
+            color: var(--text-muted);
+        }
+
+        .auth-footer a {
+            color: var(--gold);
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .error-message {
+            background: rgba(255, 51, 51, 0.08);
+            border: 1px solid rgba(255, 51, 51, 0.25);
+            color: #ff4d4d;
+            border-radius: 6px;
+            padding: 10px 15px;
+            font-size: 0.8rem;
+            margin-bottom: 20px;
+            display: none;
+            font-family: var(--font-mono);
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-gradient"></div>
+    <div class="bg-grid"></div>
+
+    <header class="header">
+        <div class="logo">
+            <span class="logo-classic">IMPERIUM</span>
+            <span class="logo-gold">BARBER</span>
+        </div>
+        <nav class="nav">
+            <a href="/" class="nav-link">PÁGINA INICIAL</a>
+        </nav>
+    </header>
+
+    <main class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h2 class="auth-logo">CRIAR NOVA <span class="gold">CONTA</span></h2>
+                <p class="auth-subtitle">> REGISTER_NEW_CLIENT_V2</p>
+            </div>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, msg in messages %}
+                        <div class="error-message" style="display: block;">
+                            > {{ msg }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form action="/register" method="POST" class="auth-form">
+                <div class="form-group">
+                    <label class="form-label">Nome Completo</label>
+                    <input type="text" name="name" placeholder="Como quer ser chamado" required class="form-input">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Celular para Contato</label>
+                    <input type="tel" name="phone" placeholder="(11) 99999-9999" required class="form-input">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">E-mail</label>
+                    <input type="email" name="email" placeholder="seu@email.com" required class="form-input">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Nome de Usuário (Para Login)</label>
+                    <input type="text" name="username" placeholder="Escolha um usuário" required class="form-input">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Senha de Segurança</label>
+                    <input type="password" name="password" placeholder="Defina uma senha" required class="form-input">
+                </div>
+
+                <button type="submit" class="auth-btn">CONCLUIR CADASTRO E ENTRAR</button>
+
+                <div class="auth-footer">
+                    Já possui cadastro? <a href="/login">Entre aqui</a>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2026 Imperium Barber. Tecnologia de Alta Performance para Barbearias.</p>
+    </footer>
+</body>
+</html>
