@@ -346,16 +346,8 @@
 
         <!-- Tab Configurações -->
         <div id="tab-config" class="table-container tab-content" style="display: none;">
-            <h2 style="color: var(--gold); font-family: var(--font-heading); margin-bottom: 20px;">Configurações da Loja (White-Label)</h2>
+            <h2 style="color: var(--gold); font-family: var(--font-heading); margin-bottom: 20px;">Configurações do Sistema</h2>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                <div class="form-group">
-                    <label class="form-label" style="color: var(--gold);">Nome Primário (Ex: IMPERIUM)</label>
-                    <input type="text" id="config-nome-pri" value="{{ site_config.nome_primario }}" class="form-input">
-                </div>
-                <div class="form-group">
-                    <label class="form-label" style="color: var(--gold);">Nome Secundário (Ex: BARBER)</label>
-                    <input type="text" id="config-nome-sec" value="{{ site_config.nome_secundario }}" class="form-input">
-                </div>
                 <div class="form-group">
                     <label class="form-label" style="color: var(--gold);">WhatsApp com DDD (Somente Números)</label>
                     <input type="text" id="config-whatsapp" value="{{ site_config.whatsapp }}" class="form-input">
@@ -391,8 +383,6 @@
 
         async function saveConfig() {
             const payload = {
-                nome_primario: document.getElementById('config-nome-pri').value,
-                nome_secundario: document.getElementById('config-nome-sec').value,
                 whatsapp: document.getElementById('config-whatsapp').value,
                 start_time: document.getElementById('config-start').value,
                 end_time: document.getElementById('config-end').value,
